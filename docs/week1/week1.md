@@ -26,7 +26,21 @@
 
 ![img.png](스프링배치-프로젝트.png)
 
+application.yml
 
+```yaml
+spring:
+  datasource:
+    url: jdbc:h2:~/spring-batch
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  h2:
+    console:
+      enabled: true
+```
+
+H2 Database 사용
 
 ```java
 @EnableBatchProcessing
@@ -58,6 +72,117 @@ Spring Batch 에서는 메타 데이터 테이블들이 필요하다.
 H2 DB 를 사용하면 Spring Boot 가 실행 될 때 해당 테이블을 자동으로 생성해 준다.
 
 MySQL 이나 Oracle 과 같은 DB 는 개발자가 직접 생성해야 한다.
+
+현재 h2 DB 를 사용하고 있기 때문에 , 진짜 자동으로 생성 해주는 지 확인 해보자
+
+스프링 부트 애플리케이션을 실행 한 뒤
+h2 DB 가 설치된 경로에 가서 ./h2.sh 명령어로 h2 DB 를 실행해보았다.
+
+![img.png](h2DB테이블.png)
+
+??? 생성된 메타 테이블이 없다??
+
+자동으로 생성되는 것이 아닌가?? 
+
+혹시 배치 관련 객체를 정의 하지 않아서 그런 건가 싶어서  
+
+2주차 교안을 참고하여 아래와 같은 코드를 작성하였다.
+
+```java
+@Slf4j
+public class GreetingTask implements Tasklet , InitializingBean {
+  @Override
+  public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
+    log.info("------------------ Task Execute -----------------");
+    log.info("GreetingTask: {}, {}", contribution, chunkContext);
+
+    return RepeatStatus.FINISHED;
+  }
+
+  @Override
+  public void afterPropertiesSet() throws Exception {
+    log.info("----------------- After Properites Sets() --------------");
+  }
+}
+
+```
+
+```java
+@Slf4j
+@Configuration
+public class BasicTaskJobConfiguration {
+
+    @Autowired
+    PlatformTransactionManager transactionManager;
+
+    @Bean
+    public Tasklet greetingTasklet() {
+        return new GreetingTask();
+    }
+
+    @Bean
+    public Step step(JobRepository jobRepository, PlatformTransactionManager transactionManager) {
+        log.info("------------------ Init myStep -----------------");
+
+        return new StepBuilder("myStep", jobRepository)
+                .tasklet(greetingTasklet(), transactionManager)
+                .build();
+    }
+
+    @Bean
+    public Job myJob(Step step, JobRepository jobRepository) {
+        log.info("------------------ Init myJob -----------------");
+        return new JobBuilder("myJob", jobRepository)
+                .incrementer(new RunIdIncrementer())
+                .start(step)
+                .build();
+    }
+}
+```
+
+다시 스프링 부트 애플리케이션을 실행했을 때 정상적으로 동작하였고, h2 DB를 확인했는데
+여전히 메타 데이터 테이블은 보이지 않았다.
+
+
+구글링 해본 결과 application.yml 파일에
+
+spring.batch.jdbc.initialize-schema 옵션을 always 로 설정 해야 한다고 하였다.
+
+```yaml
+spring:
+  datasource:
+    url: jdbc:h2:~/spring-batch
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  h2:
+    console:
+      enabled: true
+  batch:
+    jdbc:
+      initialize-schema: always
+```
+
+
+옵션을 설정 한 뒤 다시 실행 해보았지만 여전히 테이블이 생성되지 않았다.
+
+
+"spring batch h2 db auto " 키워드 위주로 다시 검색을 해보았고
+
+스프링 배치 공식 깃헙에 관련 내용이 있었다.
+
+https://github.com/spring-projects/spring-batch/issues/4252
+
+
+@EnableBatchProcessing 애너테이션을 제거하라는 내용이었다.
+
+@EnableBatchProcessing 애너테이션을 제거하고 실행했더니
+
+
+![img_1.png](h2메타데이터.png)
+
+드디어 메타 데이터 테이블이 생성 되었다. !!
+
 
 
 #### BATCH_JOB_INSTANCE 

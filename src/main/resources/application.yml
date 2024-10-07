@@ -1,11 +1,13 @@
 spring:
   datasource:
-    hikari:
-      maximum-pool-size: 10
-    url: jdbc:h2:~/spring-batch
+#    url: jdbc:h2:~/spring-batch
+    url: jdbc:h2:tcp://localhost/~//spring-batch
     driver-class-name: org.h2.Driver
     username: sa
     password:
+  h2:
+    console:
+      enabled: true
   batch:
-    job:
-      enabled: false
+    jdbc:
+      initialize-schema: always
