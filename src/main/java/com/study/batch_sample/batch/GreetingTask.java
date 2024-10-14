@@ -9,6 +9,7 @@ import org.springframework.beans.factory.InitializingBean;
 
 @Slf4j
 public class GreetingTask implements Tasklet , InitializingBean {
+
     @Override
     public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
         log.info("------------------ Task Execute -----------------");

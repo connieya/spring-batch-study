@@ -18,29 +18,33 @@ import org.springframework.transaction.PlatformTransactionManager;
 @Configuration
 public class BasicTaskJobConfiguration {
 
+
     @Autowired
     PlatformTransactionManager transactionManager;
 
     @Bean
-    public Tasklet greetingTasklet() {
+    public Tasklet greetingTasklet(){
         return new GreetingTask();
     }
 
     @Bean
-    public Step step(JobRepository jobRepository, PlatformTransactionManager transactionManager) {
+    public Step step(JobRepository jobRepository , PlatformTransactionManager transactionManager) {
         log.info("------------------ Init myStep -----------------");
 
         return new StepBuilder("myStep", jobRepository)
-                .tasklet(greetingTasklet(), transactionManager)
+                .tasklet(greetingTasklet(),transactionManager)
                 .build();
     }
 
     @Bean
-    public Job myJob(Step step, JobRepository jobRepository) {
-        log.info("------------------ Init myJob -----------------");
-        return new JobBuilder("myJob", jobRepository)
+    public Job myJob(Step step , JobRepository jobRepository) {
+        log.info("------------------ Init myJob ----------------");
+
+        return new JobBuilder("myJob",jobRepository)
                 .incrementer(new RunIdIncrementer())
                 .start(step)
                 .build();
     }
+
+
 }
