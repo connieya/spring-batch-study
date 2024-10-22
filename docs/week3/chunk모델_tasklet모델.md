@@ -112,3 +112,261 @@
 ## 실습
 
 ### 휴면 회원 베치 구현 
+
+가입한 회원 중 1년이 지나도록 상태 변화가 없는 회원을 휴면 회원으로 전환
+
+User
+
+회원정보는 csv 파일에 저장
+
+```csv
+id,name,last_update
+1,Kim,2023-11-10
+2,Park,2023-02-15
+3,Lee,2023-12-05
+4,Kang,2024-05-05
+5,Han,2023-01-15
+```
+
+
+
+
+#### CSV 파일 처리를 위한 User 객체 
+
+
+```java
+@Data
+public class User {
+    private Long id;
+    private String name;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate lastUpdate;
+}
+
+```
+
+#### Reader 구현 
+
+CsvBatchJobConfig.java
+
+```java
+   @Bean
+    public FlatFileItemReader<User> csvReader() {
+        return new FlatFileItemReaderBuilder<User>()
+                .name("userCsvReader")
+                .resource(new FileSystemResource("src/main/resources/week3/users.csv"))
+                .linesToSkip(1)
+                .delimited()
+                .names(new String[] { "id", "name", "lastUpdate" })
+                .lineMapper(userLineMapper()) // lineMapper 메서드 호출
+                .build();
+    }
+
+```
+
+- name : 이름 설정
+- resources :  CSV 파일 경로 지정
+- linesToSkip(1) : CSV 파일의 첫 번째 줄을 건너 뛴다.
+- delimited(): CSV 파일을 구분자(콤마)로 나누어 각 값을 필드로 인식하도록 합니다.
+- names: CSV 파일에서 읽어들일 컬럼 이름을 지정합니다.
+- lineMapper: 각 라인을 User 객체로 변환하는 매퍼를 설정합니다.
+
+
+```java
+ private LineMapper<User> userLineMapper() {
+  DefaultLineMapper<User> lineMapper = new DefaultLineMapper<>();
+
+  DelimitedLineTokenizer lineTokenizer = new DelimitedLineTokenizer();
+  lineTokenizer.setNames("id", "name", "lastUpdate");
+
+  lineMapper.setLineTokenizer(lineTokenizer);
+  lineMapper.setFieldSetMapper(new FieldSetMapper<User>() {
+    @Override
+    public User mapFieldSet(FieldSet fieldSet) throws BindException {
+      User user = new User();
+      user.setId(fieldSet.readLong("id")); // id를 Long으로 읽어옴
+      user.setName(fieldSet.readString("name")); // name을 String으로 읽어옴
+      user.setLastUpdate(LocalDate.parse(fieldSet.readString("lastUpdate"), DateTimeFormatter.ofPattern("yyyy-MM-dd"))); // lastUpdate를 LocalDate로 파싱
+      return user;
+    }
+  });
+
+  return lineMapper;
+}
+```
+
+- userLineMapper() 메서드는 CSV 파일의 각 라인을 User 객체에 매핑하는 기능을 제공한다.
+- DelimitedLineTokenizer: CSV 파일에서 데이터를 토큰화하여 "id", "name", "lastUpdate" 컬럼을 인식한다.
+- FieldSetMapper: 각 토큰을 User 객체의 속성으로 매핑한다.
+
+
+#### Processor 구현
+
+UserItemProcessor.java
+
+```java
+public class UserItemProcessor implements ItemProcessor<User, User> {
+
+    @Override
+    public User process(User user) throws Exception {
+        // 현재 날짜에서 1년 전 날짜를 계산
+        LocalDate oneYearAgo = LocalDate.now().minusYears(1);
+
+        // user의 lastUpdate가 1년 전 날짜보다 이전인지 확인
+        if (user.getLastUpdate().isBefore(oneYearAgo)) {
+            user.setName(user.getName() + " (INACTIVE)");
+        }
+        return user;
+    }
+}
+```
+
+현재 날짜에서 1년 이전의 회원인지 확인하고, 해당하는 회원의 이름을 "(INACTIVE)"로 변경한다
+
+
+#### Writer 구현
+
+UserItemWriter.java
+
+````java
+@Slf4j
+public class UserItemWriter extends FlatFileItemWriter<User> {
+
+    public UserItemWriter() {
+        setResource(new FileSystemResource("src/main/resources/week3/output_users.csv"));
+        setAppendAllowed(true); // 파일에 데이터를 추가할 수 있도록 설정
+        setLineAggregator(new LineAggregator<User>() {
+            @Override
+            public String aggregate(User user) {
+                return String.format("%d,%s,%s",
+                        user.getId(),
+                        user.getName(),
+                        user.getLastUpdate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+            }
+        });
+    }
+}
+````
+
+- 처리된 User 객체를 output_users 이름의 csv 파일로 출력한다.
+
+#### Job & Step
+
+````java
+   @Bean
+    public Job csvJob(Step csvStep) {
+        return new JobBuilder("csvJob", jobRepository)
+                .incrementer(new RunIdIncrementer())
+                .start(csvStep)
+                .build();
+    }
+
+    @Bean
+    public Step csvStep() {
+        return new StepBuilder("csvStep", jobRepository)
+                .<User, User>chunk(10 ,transactionManager)
+                .reader(csvReader())
+                .processor(new UserItemProcessor())
+                .writer(new UserItemWriter())
+                .build();
+    }
+````
+
+
+*Job*
+
+- 전체 베치 작업을 정의하는 요소 
+- JobBuilder: 배치 작업의 이름을 설정하고, jobRepository를 통해 상태를 관리한다.
+- incrementer: 배치 작업 실행 시 고유한 ID를 생성하는 RunIdIncrementer를 사용한다.
+- start: 이 배치 작업에서 시작할 Step을 지정한다.
+
+*Step*
+
+- StepBuilder: 단계의 이름을 설정하고, jobRepository를 통해 단계를 관리한다.
+- chunk: 한 번에 처리할 데이터의 덩어리 크기를 설정한다.
+- reader: csvReader()에서 정의된 리더를 사용하여 데이터를 읽는다.
+- processor: UserItemProcessor를 사용하여 데이터를 처리한다.
+- writer: UserItemWriter를 사용하여 데이터를 기록한다.
+
+#### 구성 클래스
+
+````java
+@Slf4j
+@Configuration
+public class CsvBatchJobConfig {
+
+    @Autowired
+    private PlatformTransactionManager transactionManager;
+
+    @Autowired
+    private JobRepository jobRepository;
+
+
+    private LineMapper<User> userLineMapper() {
+        DefaultLineMapper<User> lineMapper = new DefaultLineMapper<>();
+
+        DelimitedLineTokenizer lineTokenizer = new DelimitedLineTokenizer();
+        lineTokenizer.setNames("id", "name", "lastUpdate");
+
+        lineMapper.setLineTokenizer(lineTokenizer);
+        lineMapper.setFieldSetMapper(new FieldSetMapper<User>() {
+            @Override
+            public User mapFieldSet(FieldSet fieldSet) throws BindException {
+                User user = new User();
+                user.setId(fieldSet.readLong("id")); // id를 Long으로 읽어옴
+                user.setName(fieldSet.readString("name")); // name을 String으로 읽어옴
+                user.setLastUpdate(LocalDate.parse(fieldSet.readString("lastUpdate"), DateTimeFormatter.ofPattern("yyyy-MM-dd"))); // lastUpdate를 LocalDate로 파싱
+                return user;
+            }
+        });
+
+        return lineMapper;
+    }
+
+    @Bean
+    public FlatFileItemReader<User> csvReader() {
+        return new FlatFileItemReaderBuilder<User>()
+                .name("userCsvReader")
+                .resource(new FileSystemResource("src/main/resources/week3/users.csv"))
+                .linesToSkip(1)
+                .delimited()
+                .names(new String[] { "id", "name", "lastUpdate" })
+                .lineMapper(userLineMapper()) // lineMapper 메서드 호출
+                .build();
+    }
+
+
+    @Bean
+    public Job csvJob(Step csvStep) {
+        return new JobBuilder("csvJob", jobRepository)
+                .incrementer(new RunIdIncrementer())
+                .start(csvStep)
+                .build();
+    }
+
+    @Bean
+    public Step csvStep() {
+        return new StepBuilder("csvStep", jobRepository)
+                .<User, User>chunk(10 ,transactionManager)
+                .reader(csvReader())
+                .processor(new UserItemProcessor())
+                .writer(new UserItemWriter())
+                .build();
+    }
+}
+
+````
+
+#### 실행
+
+
+![img.png](img.png)
+
+결과 
+
+![img_1.png](img_1.png)
+
+
+output_users.csv 
+
+![img_2.png](img_2.png)
