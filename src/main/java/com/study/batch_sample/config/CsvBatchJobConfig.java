@@ -30,8 +30,8 @@ import org.springframework.validation.BindException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-@Slf4j
-@Configuration
+//@Slf4j
+//@Configuration
 public class CsvBatchJobConfig {
 
     @Autowired
