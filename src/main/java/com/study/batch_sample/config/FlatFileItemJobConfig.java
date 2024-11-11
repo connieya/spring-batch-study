@@ -26,7 +26,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
-@Configuration
+//@Configuration
 public class FlatFileItemJobConfig {
 
     public static final int CHUNK_SIZE = 100;
