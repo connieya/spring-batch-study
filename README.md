@@ -5,3 +5,4 @@
 - [3주차](docs/week3/chunk모델_tasklet모델.md)
 - [4주차](docs/week4/FlatFileItemReader.md)
 - [5주차](docs/week5/JdbcPagingItem.md)
+- [6주차](docs/week6/JpaPagingItem.md)
