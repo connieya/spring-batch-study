@@ -1,6 +1,6 @@
-package com.study.batch_sample.config;
+package com.study.batch_sample.week5.config;
 
-import com.study.batch_sample.job.Customer;
+import com.study.batch_sample.common.Customer;
 import org.springframework.batch.item.database.ItemSqlParameterSourceProvider;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;

@@ -1,4 +1,4 @@
-package com.study.batch_sample.batch;
+package com.study.batch_sample.week4.batch;
 
 import org.springframework.batch.item.file.FlatFileFooterCallback;
 

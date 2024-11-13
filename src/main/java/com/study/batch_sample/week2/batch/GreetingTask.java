@@ -1,4 +1,4 @@
-package com.study.batch_sample.batch;
+package com.study.batch_sample.week2.batch;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.StepContribution;

@@ -1,6 +1,6 @@
-package com.study.batch_sample.config;
+package com.study.batch_sample.week5.config;
 
-import com.study.batch_sample.job.Customer;
+import com.study.batch_sample.common.Customer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -25,10 +25,9 @@ import org.springframework.transaction.PlatformTransactionManager;
 import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 @Slf4j
-//@Configuration
+@Configuration
 public class JdbcPagingReaderJobConfig {
 
     public static final int CHUNK_SIZE = 2;
@@ -67,6 +66,7 @@ public class JdbcPagingReaderJobConfig {
                 .fetchSize(CHUNK_SIZE)
                 .dataSource(dataSource)
                 .rowMapper(new BeanPropertyRowMapper<>(Customer.class))
+                .pageSize(5)
                 .queryProvider(queryProvider())
                 .parameterValues(parameterValue)
                 .build();

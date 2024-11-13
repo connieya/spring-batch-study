@@ -1,10 +1,10 @@
-package com.study.batch_sample.config;
+package com.study.batch_sample.week4.config;
 
-import com.study.batch_sample.batch.AggregateCustomerProcessor;
-import com.study.batch_sample.batch.CustomerFooter;
-import com.study.batch_sample.batch.CustomerHeader;
-import com.study.batch_sample.batch.CustomerLineAggregator;
-import com.study.batch_sample.job.Customer;
+import com.study.batch_sample.week4.batch.AggregateCustomerProcessor;
+import com.study.batch_sample.week4.batch.CustomerFooter;
+import com.study.batch_sample.week4.batch.CustomerHeader;
+import com.study.batch_sample.week4.batch.CustomerLineAggregator;
+import com.study.batch_sample.common.Customer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -18,7 +18,6 @@ import org.springframework.batch.item.file.FlatFileItemWriter;
 import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
 import org.springframework.batch.item.file.builder.FlatFileItemWriterBuilder;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.transaction.PlatformTransactionManager;

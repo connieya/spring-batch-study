@@ -1,6 +1,6 @@
-package com.study.batch_sample.batch;
+package com.study.batch_sample.week3.batch;
 
-import com.study.batch_sample.job.User;
+import com.study.batch_sample.common.User;
 import org.springframework.batch.item.ItemProcessor;
 
 import java.time.LocalDate;

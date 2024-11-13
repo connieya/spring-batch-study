@@ -1,6 +1,6 @@
-package com.study.batch_sample.batch;
+package com.study.batch_sample.week4.batch;
 
-import com.study.batch_sample.job.Customer;
+import com.study.batch_sample.common.Customer;
 import org.springframework.batch.item.file.transform.LineAggregator;
 
 public class CustomerLineAggregator implements LineAggregator<Customer> {

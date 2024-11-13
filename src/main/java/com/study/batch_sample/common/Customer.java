@@ -1,4 +1,4 @@
-package com.study.batch_sample.job;
+package com.study.batch_sample.common;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

@@ -1,6 +1,6 @@
-package com.study.batch_sample.batch;
+package com.study.batch_sample.week3.batch;
 
-import com.study.batch_sample.job.User;
+import com.study.batch_sample.common.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.file.FlatFileItemWriter;
 import org.springframework.batch.item.file.transform.LineAggregator;
