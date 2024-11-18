@@ -11,16 +11,20 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Entity
-@NoArgsConstructor
-@AllArgsConstructor
+//@Entity
+//@NoArgsConstructor
+//@AllArgsConstructor
 public class Customer {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
     private String name;
     private int age;
     private String gender;
+
+    public void addOneAge(){
+        age++;
+    }
 }

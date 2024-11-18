@@ -27,7 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
-@Configuration
+//@Configuration
 public class JdbcPagingReaderJobConfig {
 
     public static final int CHUNK_SIZE = 2;

@@ -22,7 +22,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import javax.sql.DataSource;
 
 @Slf4j
-@Configuration
+//@Configuration
 public class JpaPagingWriterJobConfig {
 
     public static final int CHUNK_SIZE = 2;

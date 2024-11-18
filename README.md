@@ -6,3 +6,5 @@
 - [4주차](docs/week4/FlatFileItemReader.md)
 - [5주차](docs/week5/JdbcPagingItem.md)
 - [6주차](docs/week6/JpaPagingItem.md)
+- [6주차](docs/week6/JpaPagingItem.md)
+- [7주차](docs/week7/MyBatisPagingItemReader.md)

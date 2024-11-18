@@ -15,6 +15,7 @@ import org.springframework.batch.item.file.FlatFileItemWriter;
 import org.springframework.batch.item.file.builder.FlatFileItemWriterBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.transaction.PlatformTransactionManager;
 
@@ -52,7 +53,7 @@ public class JpaPagingReaderJobConfig {
     public JpaPagingItemReader<Customer> customerJpaPagingItemReader() {
         return new JpaPagingItemReaderBuilder<Customer>()
                 .name("customerJpaPagingItemReader")
-                .queryString("select c from Customer c where c.age > :age order by id desc")
+                .queryString("select c from Customer c where c.age > :age order by id")
                 .pageSize(CHUNK_SIZE)
                 .entityManagerFactory(entityManagerFactory)
                 .parameterValues(Collections.singletonMap("age",20))
@@ -81,7 +82,11 @@ public class JpaPagingReaderJobConfig {
         return new StepBuilder("customerJpaPagingStep", jobRepository)
                 .<Customer, Customer>chunk(CHUNK_SIZE, transactionManager)
                 .reader(customerJpaPagingItemReader())
-                .processor(new CustomerItemProcessor())
+                .processor(item -> {
+                    log.info("=========== processs =============");
+                    item.addOneAge();
+                    return item;
+                })
                 .writer(customerJpaFlatFileItemWriter())
                 .build();
     }
