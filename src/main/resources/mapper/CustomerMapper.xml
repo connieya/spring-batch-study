@@ -14,4 +14,8 @@
         FROM customer
                  LIMIT #{_skiprows}, #{_pagesize}
     </select>
+
+    <insert id="insertCustomers" parameterType="com.study.batch_sample.week7.model.Customer">
+        INSERT INTO customer2(name, age, gender) VALUES (#{name}, #{age}, #{gender});
+    </insert>
 </mapper>

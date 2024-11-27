@@ -186,3 +186,55 @@ public class MyBatisReaderJobConfig {
 }
 ```
 
+## MyBatisItemWriter
+
+- MyBatisBatchItemWriter Spring Batch 에서 제공하는 ItemWriter 인터페이스를 구현하는 클래스이다.
+- 데이터를 MyBaits 를 통해 데이터베이스에 저장하는 데 사용된다.
+
+### 구성 요소
+
+- SqlSessionTemplate : MyBatis SqlSession 생성 및 관리를 위한 템플릿 객체이다.
+- SqlSessionFactory : SqlSessionTemplate 생성을 위한 팩토리 객체이다.
+- StatementId : 실행할 MyBaits 의 SQL 맵퍼의 StatementID 이다.
+- ItemToParameterConverter : 객체를 ParameterMap 으로 변경할 수 있다.
+
+### 장점
+
+- ORM 연동 : MyBatis 를 통해 다양한 데이터베이스에 데이터를 저장할 수 있다.
+- SQL 쿼리 연동 : SQL 쿼리를 Java 코드로 부터 분리하여 관리 및 유지 보수가 용이하다.
+- 유연성 : 다양한 설정을 통해 원하는 방식으로 데이터를 저장할 수 있다.
+
+### 단점
+
+- 설정 복잡성 : MyBatis 설정 및 SQL 맵퍼 작성이 복잡할 수 있다.
+- 데이터베이스 종속 : 특정 데이터베이스에 종속적이다.
+- 오류 가능성 : 설정 오류 시 데이터 손상 가능성이 있다.
+
+
+## 샘플
+
+Mybatis XML 작성
+
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.study.batch_sample.week7.mapper.CustomerMapper">
+    <resultMap id="customerResult" type="com.study.batch_sample.week7.model.Customer">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="age" column="age"/>
+        <result property="gender" column="gender"/>
+    </resultMap>
+
+    <select id="selectCustomers" resultMap="customerResult">
+        SELECT id, name, age, gender
+        FROM customer
+        LIMIT #{_skiprows}, #{_pagesize}
+    </select>
+
+    <insert id="insertCustomers" parameterType="com.schooldevops.springbatch.batchsample.jobs.models.Customer">
+        INSERT INTO customer2(name, age, gender) VALUES (#{name}, #{age}, #{gender});
+    </insert>
+</mapper>
+```
