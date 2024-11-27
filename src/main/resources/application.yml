@@ -18,3 +18,5 @@ spring:
   batch:
     jdbc:
       initialize-schema: always
+mybatis:
+  mapper-locations: classpath:mapper/*.xml

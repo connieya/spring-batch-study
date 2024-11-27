@@ -35,7 +35,7 @@ dependencies {
 // https://mvnrepository.com/artifact/org.mybatis/mybatis-spring
 //	implementation group: 'org.mybatis', name: 'mybatis-spring', version: '2.0.6'
 	// https://mvnrepository.com/artifact/org.apache.ibatis/ibatis-core
-	implementation group: 'org.apache.ibatis', name: 'ibatis-core', version: '3.0'
+//	implementation group: 'org.apache.ibatis', name: 'ibatis-core', version: '3.0'
 	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3'
 
 }

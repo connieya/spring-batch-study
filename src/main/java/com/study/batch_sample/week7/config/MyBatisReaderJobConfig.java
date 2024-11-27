@@ -1,6 +1,6 @@
 package com.study.batch_sample.week7.config;
 
-import com.study.batch_sample.common.Customer;
+import com.study.batch_sample.week7.model.Customer;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.batch.MyBatisPagingItemReader;
