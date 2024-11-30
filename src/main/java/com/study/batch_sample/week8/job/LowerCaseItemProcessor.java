@@ -1,6 +1,6 @@
 package com.study.batch_sample.week8.job;
 
-import com.study.batch_sample.week8.model.Customer;
+import com.study.batch_sample.model.Customer;
 import org.springframework.batch.item.ItemProcessor;
 
 

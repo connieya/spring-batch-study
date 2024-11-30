@@ -1,11 +1,11 @@
-package com.study.batch_sample.week7.mapper;
+package com.study.batch_sample.mapper;
 
-import com.study.batch_sample.week7.model.Customer;
+import com.study.batch_sample.model.Customer;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 
-//@Mapper
+@Mapper
 public interface CustomerMapper {
 
     List<Customer> selectCustomers();

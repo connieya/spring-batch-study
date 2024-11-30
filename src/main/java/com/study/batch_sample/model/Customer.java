@@ -1,4 +1,4 @@
-package com.study.batch_sample.week7.model;
+package com.study.batch_sample.model;
 
 import lombok.Data;
 

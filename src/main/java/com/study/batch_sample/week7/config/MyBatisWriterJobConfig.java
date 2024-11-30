@@ -1,6 +1,6 @@
 package com.study.batch_sample.week7.config;
 
-import com.study.batch_sample.week7.model.Customer;
+import com.study.batch_sample.model.Customer;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.batch.MyBatisBatchItemWriter;
@@ -40,7 +40,7 @@ public class MyBatisWriterJobConfig {
     public MyBatisBatchItemWriter<Customer> myBatisBatchItemWriter() {
         return new MyBatisBatchItemWriterBuilder<Customer>()
                 .sqlSessionFactory(sqlSessionFactory)
-                .statementId("com.study.batch_sample.week7.mapper.CustomerMapper.insertCustomers")
+                .statementId("com.study.batch_sample.mapper.CustomerMapper.insertCustomers")
                 .build();
     }
 

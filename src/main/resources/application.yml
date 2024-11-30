@@ -5,16 +5,25 @@ spring:
     driver-class-name: org.h2.Driver
     username: sa
     password:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://localhost:3306/meta_db?serverTimezone=Asia/Seoul
+#    username: root
+#    password: 12345678
+#  datasource-data:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://localhost:3306/data_db?serverTimezone=Asia/Seoul
+#    username: root
+#    password: 12345678
   h2:
     console:
       enabled: true
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
+#  jpa:
+#    hibernate:
+#      ddl-auto: update
+#    show-sql: true
+#    properties:
+#      hibernate:
+#        format_sql: true
   batch:
     jdbc:
       initialize-schema: always

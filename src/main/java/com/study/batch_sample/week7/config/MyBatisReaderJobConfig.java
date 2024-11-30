@@ -1,6 +1,6 @@
 package com.study.batch_sample.week7.config;
 
-import com.study.batch_sample.week7.model.Customer;
+import com.study.batch_sample.model.Customer;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.batch.MyBatisPagingItemReader;
@@ -29,23 +29,23 @@ public class MyBatisReaderJobConfig {
     public static final String ENCODING = "UTF-8";
     public static final String MYBATIS_CHUNK_JOB = "MYBATIS_CHUNK_JOB";
 
-//    @Autowired
+    @Autowired
     DataSource dataSource;
 
-//    @Autowired
+    @Autowired
     SqlSessionFactory sqlSessionFactory;
 
 
-//    @Bean
+    @Bean
     public MyBatisPagingItemReader<Customer> myBatisItemReader() {
         return new MyBatisPagingItemReaderBuilder<Customer>()
                 .sqlSessionFactory(sqlSessionFactory)
                 .pageSize(CHUNK_SIZE)
-                .queryId("com.study.batch_sample.week7.mapper.CustomerMapper.selectCustomers")
+                .queryId("com.study.batch_sample.mapper.CustomerMapper.selectCustomers")
                 .build();
     }
 
-//    @Bean
+    @Bean
     public FlatFileItemWriter<Customer> customerCursorFlatFileItemWriter() {
         return new FlatFileItemWriterBuilder<Customer>()
                 .name("customerCursorFlatFileItemWriter")

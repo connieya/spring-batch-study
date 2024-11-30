@@ -1,8 +1,8 @@
 package com.study.batch_sample.week8.config;
 
+import com.study.batch_sample.model.Customer;
 import com.study.batch_sample.week8.job.After20YearsItemProcessor;
 import com.study.batch_sample.week8.job.LowerCaseItemProcessor;
-import com.study.batch_sample.week8.model.Customer;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.batch.MyBatisPagingItemReader;
@@ -45,7 +45,7 @@ public class MyBatisReaderConfig {
         return new MyBatisPagingItemReaderBuilder<Customer>()
                 .sqlSessionFactory(sqlSessionFactory)
                 .pageSize(CHUNK_SIZE)
-                .queryId("com.study.batch_sample.week8.mapper.CustomerMapper.selectCustomers")
+                .queryId("com.study.batch_sample.mapper.CustomerMapper.selectCustomers")
                 .build();
     }
 
