@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 
-<mapper namespace="com.study.batch_sample.week7.mapper.CustomerMapper">
-    <resultMap id="customerResult" type="com.study.batch_sample.week7.model.Customer">
+<mapper namespace="com.study.batch_sample.week8.mapper.CustomerMapper">
+    <resultMap id="customerResult" type="com.study.batch_sample.week8.model.Customer">
         <result property="id" column="id"/>
         <result property="name" column="name"/>
         <result property="age" column="age"/>
@@ -15,7 +15,7 @@
                  LIMIT #{_skiprows}, #{_pagesize}
     </select>
 
-    <insert id="insertCustomers" parameterType="com.study.batch_sample.week7.model.Customer">
+    <insert id="insertCustomers" parameterType="com.study.batch_sample.week8.model.Customer">
         INSERT INTO customer2(name, age, gender) VALUES (#{name}, #{age}, #{gender});
     </insert>
 </mapper>
