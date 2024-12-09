@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.stereotype.Repository;
 
 @SpringBootApplication
-//@MapperScan(basePackages = {"com.study.batch_sample.week7"} , annotationClass = Repository.class)
+@MapperScan(basePackages = "com.study.batch_sample.mapper")
 public class BatchSampleApplication {
 
 	public static void main(String[] args) {

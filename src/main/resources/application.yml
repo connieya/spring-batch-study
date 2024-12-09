@@ -1,22 +1,23 @@
 spring:
   datasource:
+    meta:
+      jdbc-url: jdbc:mysql://localhost:3306/meta_db?serverTimezone=Asia/Seoul
+      username: root
+      password: 12345678
+      driver-class-name: com.mysql.cj.jdbc.Driver
 #    url: jdbc:h2:~/spring-batch
-    url: jdbc:h2:tcp://localhost/~//spring-batch
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
-#    driver-class-name: com.mysql.cj.jdbc.Driver
-#    url: jdbc:mysql://localhost:3306/meta_db?serverTimezone=Asia/Seoul
-#    username: root
-#    password: 12345678
-#  datasource-data:
-#    driver-class-name: com.mysql.cj.jdbc.Driver
-#    url: jdbc:mysql://localhost:3306/data_db?serverTimezone=Asia/Seoul
-#    username: root
-#    password: 12345678
-  h2:
-    console:
-      enabled: true
+#    url: jdbc:h2:tcp://localhost/~//spring-batch
+#    driver-class-name: org.h2.Driver
+#    username: sa
+#    password:
+    data:
+      jdbc-url: jdbc:mysql://localhost:3306/data_db?serverTimezone=Asia/Seoul
+      username: root
+      password: 12345678
+      driver-class-name: com.mysql.cj.jdbc.Driver
+#  h2:
+#    console:
+#      enabled: true
 #  jpa:
 #    hibernate:
 #      ddl-auto: update

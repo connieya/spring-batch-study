@@ -27,7 +27,7 @@ import javax.sql.DataSource;
 import java.util.List;
 
 @Slf4j
-@Configuration
+//@Configuration
 public class MyBatisReaderConfig {
     public static final int CHUNK_SIZE = 2;
     public static final String ENCODING = "UTF-8";

@@ -8,3 +8,4 @@
 - [6주차](docs/week6/JpaPagingItem.md)
 - [7주차](docs/week7/MyBatisPagingItemReader.md)
 - [8주차](docs/week8/CompositeItemProcessor.md)
+- [9주차](docs/week9/customItem.md)

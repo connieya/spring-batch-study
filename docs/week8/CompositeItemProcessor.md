@@ -147,9 +147,84 @@ public class MyBatisReaderConfig {
 
 ## 실습
 
-Customer 테이블에 있는 데이터
+### 배치 메타 테이블 분리하기
 
-![img.png](img.png)
+#### dataSource 설정
+
+```yaml
+spring:
+  datasource:
+    meta:
+      jdbc-url: jdbc:mysql://localhost:3306/meta_db?serverTimezone=Asia/Seoul
+      username: root
+      password: 12345678
+      driver-class-name: com.mysql.cj.jdbc.Driver
+    data:
+      jdbc-url: jdbc:mysql://localhost:3306/data_db?serverTimezone=Asia/Seoul
+      username: root
+      password: 12345678
+      driver-class-name: com.mysql.cj.jdbc.Driver
+  batch:
+    jdbc:
+      initialize-schema: always
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+```
+
+#### Config 설정
+
+배치 메타 db 
+
+```java
+@Configuration
+public class MetaDBConfig {
+
+    @Primary
+    @Bean
+    @ConfigurationProperties(prefix = "spring.datasource.meta")
+    public DataSource metaDBSource() {
+        return DataSourceBuilder.create().build();
+    }
+
+    @Primary
+    @Bean
+    public PlatformTransactionManager metaTransactionManager() {
+        return new DataSourceTransactionManager(metaDBSource());
+    }
+
+}
+```
+
+데이터 db
+
+````java
+@Configuration
+@MapperScan(basePackages = "com.study.batch_sample.mapper", sqlSessionFactoryRef = "dataSqlSessionFactory")
+public class DataDBConfig {
+
+    @Bean
+    @ConfigurationProperties(prefix = "spring.datasource.data")
+    public DataSource dataSource() {
+        return DataSourceBuilder.create().build();
+    }
+
+    @Bean
+    public SqlSessionFactory dataSqlSessionFactory(DataSource dataSource) throws Exception {
+        SqlSessionFactoryBean factoryBean = new SqlSessionFactoryBean();
+        factoryBean.setDataSource(dataSource);
+        return factoryBean.getObject();
+    }
+
+    @Bean
+    public PlatformTransactionManager dataTransactionManager(DataSource dataSource) {
+        return new DataSourceTransactionManager(dataSource);
+    }
+}
+````
+
+data-db Customer 테이블
+
+![img_2.png](img_2.png)
 
 ### 실행
 
